@@ -8,6 +8,7 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -51,6 +52,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param() { id }: id) {
     const user = this.userService.getById(id);
     if (!user)
