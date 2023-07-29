@@ -25,8 +25,9 @@ class InMemoryUserStore implements UserStore {
 
   create = (params: CreateUserDto): UserDto => {
     const newUser = {
-      ...params,
       id: uuid(),
+      login: params.login,
+      password: params.password,
       version: 1,
       createdAt: Date.now(),
       updatedAt: Date.now(),

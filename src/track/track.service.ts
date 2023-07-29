@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import InMemoryTrackStore from './store/track.storage';
 
 @Injectable()
 export class TrackService {
+  private storage = new InMemoryTrackStore([]);
+
   create(createTrackDto: CreateTrackDto) {
-    return 'This action adds a new track';
+    return this.storage.create(createTrackDto);
   }
 
-  findAll() {
-    return `This action returns all track`;
+  getAll() {
+    return this.storage.getAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} track`;
+  getById(id: string) {
+    return this.storage.getById(id);
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+  update(id: string, updateTrackDto: UpdateTrackDto) {
+    return this.storage.update(id, updateTrackDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  remove(id: string) {
+    return this.storage.delete(id);
   }
 }
