@@ -1,29 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import InMemoryTrackStore from './store/track.storage';
+import { DatabaseService } from 'src/database/database.service';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class TrackService {
-  private storage = new InMemoryTrackStore([]);
+  constructor(private databaseService: DatabaseService) {}
 
-  create(createTrackDto: CreateTrackDto) {
-    return this.storage.create(createTrackDto);
+  create({ name, duration, artistId, albumId }: CreateTrackDto) {
+    const newTrack = {
+      id: uuid(),
+      name: name,
+      duration: duration,
+      artistId: artistId || null,
+      albumId: albumId || null,
+    };
+    return this.databaseService.tracks.create(newTrack);
   }
 
   getAll() {
-    return this.storage.getAll();
+    return this.databaseService.tracks.getAll();
   }
 
   getById(id: string) {
-    return this.storage.getById(id);
+    if (!this.getById(id))
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+    return this.databaseService.tracks.getById(id);
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    return this.storage.update(id, updateTrackDto);
+  update(id: string, { name, duration, artistId, albumId }: UpdateTrackDto) {
+    const track = this.getById(id);
+    if (!track)
+      throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
+
+    const updatedTrack = {
+      id: id,
+      name: name,
+      duration: duration,
+      artistId: artistId || null,
+      albumId: albumId || null,
+    };
+
+    return this.databaseService.tracks.update(id, updatedTrack);
   }
 
   remove(id: string) {
-    return this.storage.delete(id);
+    const track = this.getById(id);
+    if (!track)
+      throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
+    return this.databaseService.tracks.delete(id);
   }
 }

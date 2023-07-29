@@ -40,18 +40,12 @@ export class ArtistController {
 
   @Put(':id')
   update(@Param() { id }: idGEt, @Body() updateArtistDto: UpdateArtistDto) {
-    const artist = this.artistService.getById(id);
-    if (!artist)
-      throw new HttpException("Artist don't found", HttpStatus.NOT_FOUND);
     return this.artistService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param() { id }: idGEt) {
-    const artist = this.artistService.getById(id);
-    if (!artist)
-      throw new HttpException("Artist don't found", HttpStatus.NOT_FOUND);
     return this.artistService.remove(id);
   }
 }

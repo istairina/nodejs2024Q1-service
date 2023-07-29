@@ -6,7 +6,6 @@ import {
   Put,
   Param,
   Delete,
-  HttpException,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
@@ -33,25 +32,17 @@ export class AlbumController {
 
   @Get(':id')
   findOne(@Param() { id }: idGEt) {
-    if (!this.albumService.getById(id))
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     return this.albumService.getById(id);
   }
 
   @Put(':id')
   update(@Param() { id }: idGEt, @Body() updateAlbumDto: UpdateAlbumDto) {
-    const album = this.albumService.getById(id);
-    if (!album)
-      throw new HttpException("Album don't found", HttpStatus.NOT_FOUND);
     return this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param() { id }: idGEt) {
-    const album = this.albumService.getById(id);
-    if (!album)
-      throw new HttpException("Album don't found", HttpStatus.NOT_FOUND);
     return this.albumService.remove(id);
   }
 }
