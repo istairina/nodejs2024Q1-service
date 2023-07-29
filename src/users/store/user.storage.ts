@@ -13,27 +13,35 @@ class InMemoryUsersStore implements UserStore {
     this.usersDb = users;
   }
 
-  findAll: () => UserDto[];
-
-  findOne: (id: string) => UserDto;
-
   getAll = (): UserDto[] => this.usersDb;
 
   getById = (id: string): UserDto =>
     this.usersDb.find((user) => user.id === id);
 
   delete = (id: string): void => {
-    this.usersDb.filter((user) => user.id !== id);
+    const userIndex = this.usersDb.findIndex((user) => user.id === id);
+    this.usersDb.splice(userIndex, 1);
   };
 
   create = (params: CreateUserDto): UserDto => {
-    const newUser = { ...params, id: uuid() };
+    const newUser = {
+      ...params,
+      id: uuid(),
+      version: 1,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
     this.usersDb.push(newUser);
     return newUser;
   };
 
   update = (id: string, params: UpdateUserDto): UserDto => {
-    Object.assign(this.getById(id), params);
+    const newData = {
+      password: params.newPassword,
+      updatedAt: Date.now(),
+      version: this.getById(id).version + 1,
+    };
+    Object.assign(this.getById(id), newData);
     return this.getById(id);
   };
 }
