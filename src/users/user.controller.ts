@@ -33,7 +33,9 @@ export class UserController {
   findOne(@Param() { id }: idGEt) {
     if (!this.userService.getById(id))
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
-    return this.userService.getById(id);
+    const response = this.userService.getById(id);
+    delete response['password'];
+    return response;
   }
 
   @Put(':id')

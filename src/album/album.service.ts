@@ -3,6 +3,7 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { v4 as uuid } from 'uuid';
+import { TrackDto } from 'src/track/dto/track.dto';
 
 @Injectable()
 export class AlbumService {
@@ -23,7 +24,7 @@ export class AlbumService {
   }
 
   getById(id: string) {
-    if (!this.getById(id))
+    if (!this.databaseService.albums.getById(id))
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     return this.databaseService.albums.getById(id);
   }
@@ -47,6 +48,18 @@ export class AlbumService {
     const album = this.getById(id);
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+
+    const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
+    allTracks.forEach((track) => {
+      if (track.artistId === id) {
+        this.databaseService.tracks.update(id, {
+          ...track,
+          id: id,
+          albumId: null,
+        });
+      }
+    });
+
     return this.databaseService.albums.delete(id);
   }
 }

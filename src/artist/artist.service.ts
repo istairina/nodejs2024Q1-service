@@ -4,6 +4,8 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 
 import { DatabaseService } from 'src/database/database.service';
 import { v4 as uuid } from 'uuid';
+import { TrackDto } from 'src/track/dto/track.dto';
+import { AlbumDto } from 'src/album/dto/album.dto';
 
 @Injectable()
 export class ArtistService {
@@ -42,6 +44,29 @@ export class ArtistService {
     const artist = this.getById(id);
     if (!artist)
       throw new HttpException("Artist don't found", HttpStatus.NOT_FOUND);
+
+    const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
+    allTracks.forEach((track) => {
+      if (track.artistId === id) {
+        this.databaseService.tracks.update(id, {
+          ...track,
+          id: id,
+          artistId: null,
+        });
+      }
+    });
+
+    const allAlbums: AlbumDto[] = this.databaseService.albums.getAll();
+    allAlbums.forEach((album) => {
+      if (album.artistId === id) {
+        this.databaseService.albums.update(id, {
+          ...album,
+          id: id,
+          artistId: null,
+        });
+      }
+    });
+
     return this.databaseService.artists.delete(id);
   }
 }

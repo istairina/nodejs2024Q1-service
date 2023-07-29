@@ -34,9 +34,7 @@ export class UserService {
   }
 
   getById(id: string) {
-    const response = this.databaseService.users.getById(id);
-    delete response['password'];
-    return response;
+    return this.databaseService.users.getById(id);
   }
 
   update(id: string, { oldPassword, newPassword }: UpdateUserDto) {

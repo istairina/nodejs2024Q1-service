@@ -4,7 +4,6 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  Length,
 } from 'class-validator';
 
 export class CreateAlbumDto {
@@ -14,7 +13,6 @@ export class CreateAlbumDto {
 
   @IsNotEmpty()
   @IsInt()
-  @Length(4)
   year: number;
 
   @IsOptional()

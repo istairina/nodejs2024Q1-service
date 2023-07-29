@@ -24,7 +24,7 @@ export class TrackService {
   }
 
   getById(id: string) {
-    if (!this.getById(id))
+    if (!this.databaseService.tracks.getById(id))
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
     return this.databaseService.tracks.getById(id);
   }
