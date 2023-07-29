@@ -13,7 +13,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { id } from 'src/common/dto/id.dto';
+import { idGEt } from 'src/common/dto/id.dto';
 
 @Controller('user')
 export class UserController {
@@ -32,14 +32,14 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param() { id }: id) {
+  findOne(@Param() { id }: idGEt) {
     if (!this.userService.getById(id))
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
     return this.userService.getById(id);
   }
 
   @Put(':id')
-  update(@Param() { id }: id, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param() { id }: idGEt, @Body() updateUserDto: UpdateUserDto) {
     const user = this.userService.getById(id);
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
@@ -53,7 +53,7 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() { id }: id) {
+  remove(@Param() { id }: idGEt) {
     const user = this.userService.getById(id);
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
