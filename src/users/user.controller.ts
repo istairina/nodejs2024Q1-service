@@ -9,42 +9,37 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { IsUUID } from 'class-validator';
+import { id } from 'src/common/dto/id.dto';
 
-export class FindOneParams {
-  @IsUUID(4)
-  id: string;
-}
-
-@Controller('users')
-export class UsersController {
+@Controller('user')
+export class UserController {
   // private usersService: UsersService;
 
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    return this.userService.create(createUserDto);
   }
 
   @Get()
   findAll() {
-    return this.usersService.getAll();
+    return this.userService.getAll();
   }
 
   @Get(':id')
-  findOne(@Param() { id }: FindOneParams) {
-    if (!this.usersService.getById(id))
+  findOne(@Param() { id }: id) {
+    if (!this.userService.getById(id))
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
-    return this.usersService.getById(id);
+    return this.userService.getById(id);
   }
 
   @Put(':id')
-  update(@Param() { id }: FindOneParams, @Body() updateUserDto: UpdateUserDto) {
-    const user = this.usersService.getById(id);
+  update(@Param() { id }: id, @Body() updateUserDto: UpdateUserDto) {
+    const user = this.userService.getById(id);
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
     if (user.password !== updateUserDto.oldPassword)
@@ -52,14 +47,14 @@ export class UsersController {
         'Old password is incorrect',
         HttpStatus.FORBIDDEN,
       );
-    return this.usersService.update(id, updateUserDto);
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param() { id }: FindOneParams) {
-    const user = this.usersService.getById(id);
+  remove(@Param() { id }: id) {
+    const user = this.userService.getById(id);
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
-    return this.usersService.remove(id);
+    return this.userService.remove(id);
   }
 }

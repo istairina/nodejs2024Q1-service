@@ -6,7 +6,7 @@ import { UserDto } from '../dto/user.dto';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
-class InMemoryUsersStore implements UserStore {
+class InMemoryUserStore implements UserStore {
   private usersDb: UserDto[];
 
   constructor(users: UserDto[]) {
@@ -46,4 +46,4 @@ class InMemoryUsersStore implements UserStore {
   };
 }
 
-export default InMemoryUsersStore;
+export default InMemoryUserStore;
