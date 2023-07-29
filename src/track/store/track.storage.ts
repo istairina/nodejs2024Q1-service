@@ -38,7 +38,7 @@ class InMemoryTrackStore implements TrackStore {
   update = (id: string, params: UpdateTrackDto): TrackDto => {
     const newData = {
       name: params.name,
-      artistId: params.albumId || null,
+      artistId: params.artistId || null,
       duration: params.duration,
       albumId: params.albumId || null,
     };

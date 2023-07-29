@@ -1,10 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { idGEt } from 'src/common/dto/id.dto';
 
 @Controller('artist')
 export class ArtistController {
+  // private artistsService: ArtistsService;
+
   constructor(private readonly artistService: ArtistService) {}
 
   @Post()
@@ -14,21 +28,30 @@ export class ArtistController {
 
   @Get()
   findAll() {
-    return this.artistService.findAll();
+    return this.artistService.getAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.artistService.findOne(+id);
+  findOne(@Param() { id }: idGEt) {
+    if (!this.artistService.getById(id))
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    return this.artistService.getById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArtistDto: UpdateArtistDto) {
-    return this.artistService.update(+id, updateArtistDto);
+  @Put(':id')
+  update(@Param() { id }: idGEt, @Body() updateArtistDto: UpdateArtistDto) {
+    const artist = this.artistService.getById(id);
+    if (!artist)
+      throw new HttpException("Artist don't found", HttpStatus.NOT_FOUND);
+    return this.artistService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.artistService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param() { id }: idGEt) {
+    const artist = this.artistService.getById(id);
+    if (!artist)
+      throw new HttpException("Artist don't found", HttpStatus.NOT_FOUND);
+    return this.artistService.remove(id);
   }
 }
