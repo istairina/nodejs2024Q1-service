@@ -48,9 +48,8 @@ export class ArtistService {
     const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
     allTracks.forEach((track) => {
       if (track.artistId === id) {
-        this.databaseService.tracks.update(id, {
+        this.databaseService.tracks.update(track.id, {
           ...track,
-          id: id,
           artistId: null,
         });
       }
@@ -59,9 +58,8 @@ export class ArtistService {
     const allAlbums: AlbumDto[] = this.databaseService.albums.getAll();
     allAlbums.forEach((album) => {
       if (album.artistId === id) {
-        this.databaseService.albums.update(id, {
+        this.databaseService.albums.update(album.id, {
           ...album,
-          id: id,
           artistId: null,
         });
       }

@@ -13,6 +13,11 @@ export const createInstance = () => {
       artists: new Database<ArtistDto>(),
       tracks: new Database<TrackDto>(),
       albums: new Database<AlbumDto>(),
+      favorites: {
+        artists: new Map<string, ArtistDto>(),
+        albums: new Map<string, AlbumDto>(),
+        tracks: new Map<string, TrackDto>(),
+      },
     };
   }
 
