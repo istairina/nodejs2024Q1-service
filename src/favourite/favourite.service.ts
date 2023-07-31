@@ -62,7 +62,7 @@ export class FavouriteService {
         "There's no such id in favourite artists",
         HttpStatus.NOT_FOUND,
       );
-    this.databaseService.albums.delete(id);
+    this.databaseService.favorites.artists.delete(id);
     throw new HttpException(
       'The atrist has been removed',
       HttpStatus.NO_CONTENT,
@@ -75,9 +75,9 @@ export class FavouriteService {
         "There's no such id in favourite tracks",
         HttpStatus.NOT_FOUND,
       );
-    this.databaseService.albums.delete(id);
+    this.databaseService.favorites.tracks.delete(id);
     throw new HttpException(
-      'The atrist has been removed',
+      'The track has been removed',
       HttpStatus.NO_CONTENT,
     );
   }
@@ -88,9 +88,9 @@ export class FavouriteService {
         "There's no such id in favourite albums",
         HttpStatus.NOT_FOUND,
       );
-    this.databaseService.tracks.delete(id);
+    this.databaseService.favorites.albums.delete(id);
     throw new HttpException(
-      'The atrist has been removed',
+      'The album has been removed',
       HttpStatus.NO_CONTENT,
     );
   }

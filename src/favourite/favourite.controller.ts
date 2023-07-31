@@ -16,7 +16,7 @@ import { idGEt } from 'src/common/dto/id.dto';
 @ApiTags('favourite')
 @Controller('favs')
 export class FavouriteController {
-  constructor(private readonly favouriteService: FavouriteService) { }
+  constructor(private readonly favouriteService: FavouriteService) {}
 
   @ApiOperation({ summary: 'Get list of all favourites' })
   @ApiOkResponse({
@@ -100,7 +100,7 @@ export class FavouriteController {
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/album/:id')
   removeAlbum(@Param() { id }: idGEt) {
-    return this.favouriteService.removeArtist(id);
+    return this.favouriteService.removeAlbum(id);
   }
 
   @ApiOperation({ summary: 'Delete a track from favourites' })
@@ -115,6 +115,6 @@ export class FavouriteController {
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/track/:id')
   removeTrack(@Param() { id }: idGEt) {
-    return this.favouriteService.removeArtist(id);
+    return this.favouriteService.removeTrack(id);
   }
 }
