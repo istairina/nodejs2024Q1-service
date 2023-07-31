@@ -5,19 +5,20 @@
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
-## Downloading
+## Preparing
+#### Downloading
 
 ```
 git clone https://github.com/istairina/nodejs2023Q2-service.git
 ```
 
-## Changing folder
+#### Changing folder
 
 ```
 cd nodejs2023Q2-service
 ```
 
-## Installing NPM modules
+#### Installing NPM modules
 
 ```
 npm install
