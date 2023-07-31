@@ -5,11 +5,11 @@ import { TrackDto } from 'src/track/dto/track.dto';
 
 export class Favourite {
   @ApiProperty()
-  artists: { [key: string]: ArtistDto };
+  artists: ArtistDto[];
 
   @ApiProperty()
-  albums: { [key: string]: AlbumDto };
+  albums: AlbumDto[];
 
   @ApiProperty()
-  tracks: { [key: string]: TrackDto };
+  tracks: TrackDto[];
 }

@@ -581,21 +581,18 @@ components:
         login:
           type: string
           example: user
-        password:
-          type: string
         version:
           type: number
           example: 1
         createdAt:
           type: number
-          example: 1690838071481
+          example: 1690844714199
         updatedAt:
           type: number
-          example: 1690838071481
+          example: 1690844714200
       required:
         - id
         - login
-        - password
         - version
         - createdAt
         - updatedAt
@@ -762,11 +759,17 @@ components:
       type: object
       properties:
         artists:
-          type: object
+          type: array
+          items:
+            type: string
         albums:
-          type: object
+          type: array
+          items:
+            type: string
         tracks:
-          type: object
+          type: array
+          items:
+            type: string
       required:
         - artists
         - albums
