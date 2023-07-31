@@ -10,6 +10,7 @@ export class User {
   @IsString()
   login: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   password: string;

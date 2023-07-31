@@ -186,6 +186,7 @@ describe('Favorites (e2e)', () => {
         (track) => track.id === trackId,
       );
 
+      console.log(artistSearchRes, albumSearchRes, trackSearchRes);
       expect(artistSearchRes).toBeUndefined();
       expect(albumSearchRes).toBeUndefined();
       expect(trackSearchRes).toBeUndefined();

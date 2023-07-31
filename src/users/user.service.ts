@@ -19,8 +19,9 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    const response = this.databaseService.users.create(newUser);
-    delete response['password'];
+    this.databaseService.users.create(newUser);
+    const response = { ...this.getById(newUser.id) };
+    delete response.password;
     return response;
   }
 

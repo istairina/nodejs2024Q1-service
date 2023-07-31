@@ -22,6 +22,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
@@ -54,6 +55,10 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get a user by ID' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put a user id',
+  })
   @ApiOkResponse({ description: 'User has been got', type: User })
   @ApiBadRequestResponse({ description: 'Bad request: userID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -67,6 +72,10 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Change password of the user' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put a user id',
+  })
   @ApiOkResponse({ description: 'User has been updated', type: User })
   @ApiBadRequestResponse({ description: 'Bad request: userID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -77,6 +86,10 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Delete the user' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put a user id',
+  })
   @ApiNoContentResponse({ description: 'No content: user has been deleted' })
   @ApiBadRequestResponse({ description: 'Bad request: userID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
