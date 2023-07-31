@@ -69,6 +69,10 @@ export class AlbumController {
   }
 
   @ApiOperation({ summary: 'Change data of the album' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiOkResponse({ description: 'User has been updated', type: AlbumDto })
   @ApiBadRequestResponse({ description: 'Bad request: albumID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -78,6 +82,10 @@ export class AlbumController {
   }
 
   @ApiOperation({ summary: 'Delete the album' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiNoContentResponse({ description: 'No content: album has been deleted' })
   @ApiBadRequestResponse({ description: 'Bad request: albumID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })

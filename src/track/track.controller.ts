@@ -20,6 +20,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { TrackDto } from './dto/track.dto';
@@ -55,6 +56,10 @@ export class TrackController {
   }
 
   @ApiOperation({ summary: 'Get a track by ID' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiOkResponse({ description: 'Track has been got', type: TrackDto })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -64,6 +69,10 @@ export class TrackController {
   }
 
   @ApiOperation({ summary: 'Change data of the track' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiOkResponse({ description: 'User has been updated', type: TrackDto })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -73,6 +82,10 @@ export class TrackController {
   }
 
   @ApiOperation({ summary: 'Delete the track' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiNoContentResponse({ description: 'No content: track has been deleted' })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })

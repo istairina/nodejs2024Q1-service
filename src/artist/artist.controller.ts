@@ -21,6 +21,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { ArtistDto } from './dto/artist.dto';
@@ -56,6 +57,10 @@ export class ArtistController {
   }
 
   @ApiOperation({ summary: 'Get an artist by ID' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiOkResponse({ description: 'Album has been got', type: ArtistDto })
   @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -67,6 +72,10 @@ export class ArtistController {
   }
 
   @ApiOperation({ summary: 'Change data of the artist' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiOkResponse({ description: 'User has been updated', type: ArtistDto })
   @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
@@ -76,6 +85,10 @@ export class ArtistController {
   }
 
   @ApiOperation({ summary: 'Delete the artist' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
   @ApiNoContentResponse({ description: 'No content: artist has been deleted' })
   @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
