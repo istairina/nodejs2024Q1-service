@@ -1,47 +1,120 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { FavouriteService } from './favourite.service';
-import { CreateFavouriteDto } from './dto/create-favourite.dto';
-import { UpdateFavouriteDto } from './dto/update-favourite.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
+import { Favourite } from './entities/favourite.entity';
+import { idGEt } from 'src/common/dto/id.dto';
 
 @ApiTags('favourite')
 @Controller('favs')
 export class FavouriteController {
   constructor(private readonly favouriteService: FavouriteService) {}
 
-  @Post('/track/:id')
-  create(@Body() createFavouriteDto: CreateFavouriteDto) {
-    return this.favouriteService.create(createFavouriteDto);
-  }
-
+  @ApiOperation({ summary: 'Get list of all favourites' })
+  @ApiOkResponse({
+    description: 'All favourites have been got',
+    type: Favourite,
+  })
   @Get()
   findAll() {
     return this.favouriteService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.favouriteService.findOne(+id);
+  @ApiOperation({ summary: 'Add a new track to favourite' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put a track id',
+  })
+  @ApiOkResponse({
+    description: 'The track has been added to favourites',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
+  @ApiUnprocessableEntityResponse({ description: "TrackID doesn't exist" })
+  @Post('/track/:id')
+  addTrack(@Param() { id }: idGEt) {
+    return this.favouriteService.addTrack(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateFavouriteDto: UpdateFavouriteDto,
-  ) {
-    return this.favouriteService.update(+id, updateFavouriteDto);
+  @ApiOperation({ summary: 'Add a new album to favourite' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put an album id',
+  })
+  @ApiOkResponse({
+    description: 'The album has been added to favourites',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request: album ID is invalid' })
+  @ApiUnprocessableEntityResponse({ description: "AlbumID doesn't exist" })
+  @Post('/album/:id')
+  addAlbum(@Param() { id }: idGEt) {
+    return this.favouriteService.addAlbum(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favouriteService.remove(+id);
+  @ApiOperation({ summary: 'Add a new artist to favourite' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put an artist id',
+  })
+  @ApiOkResponse({
+    description: 'The artist has been added to favourites',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
+  @ApiUnprocessableEntityResponse({ description: "ArtistID doesn't exist" })
+  @Post('/artist/:id')
+  addArtist(@Param() { id }: idGEt) {
+    return this.favouriteService.addArtist(id);
+  }
+
+  @ApiOperation({ summary: 'Delete artist, album or track from favourites' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
+  @ApiNoContentResponse({
+    description: 'No content: an item by the ID has been deleted',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
+  @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
+  @Delete('/artist/:id')
+  removeArtist(@Param('id') { id }: idGEt) {
+    return this.favouriteService.removeArtist(id);
+  }
+
+  @ApiOperation({ summary: 'Delete an album from favourites' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
+  @ApiNoContentResponse({
+    description: 'No content: an item by the ID has been deleted',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request: albumID is invalid' })
+  @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
+  @Delete('/album/:id')
+  removeAlbum(@Param('id') { id }: idGEt) {
+    return this.favouriteService.removeArtist(id);
+  }
+
+  @ApiOperation({ summary: 'Delete a track from favourites' })
+  @ApiParam({
+    name: 'id',
+    description: 'Put id',
+  })
+  @ApiNoContentResponse({
+    description: 'No content: an item by the ID has been deleted',
+  })
+  @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
+  @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
+  @Delete('/track/:id')
+  removeTrack(@Param('id') { id }: idGEt) {
+    return this.favouriteService.removeArtist(id);
   }
 }

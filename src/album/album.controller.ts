@@ -20,6 +20,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { AlbumDto } from './dto/album.dto';
@@ -27,8 +28,6 @@ import { AlbumDto } from './dto/album.dto';
 @ApiTags('album')
 @Controller('album')
 export class AlbumController {
-  // private albumsService: AlbumsService;
-
   constructor(private readonly albumService: AlbumService) {}
 
   @ApiOperation({ summary: 'Create a new album' })
@@ -57,6 +56,10 @@ export class AlbumController {
   }
 
   @ApiOperation({ summary: 'Get an album by ID' })
+  @ApiParam({
+    name: 'id',
+    description: 'Gets the Action id',
+  })
   @ApiOkResponse({ description: 'Album has been got', type: AlbumDto })
   @ApiBadRequestResponse({ description: 'Bad request: albumID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
