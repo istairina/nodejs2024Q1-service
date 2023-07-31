@@ -8,12 +8,12 @@ import {
 } from 'class-validator';
 
 export class CreateAlbumDto {
-  @ApiProperty({ default: "No Need to Argue" })
+  @ApiProperty({ example: "No Need to Argue" })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ default: 1994 })
+  @ApiProperty({ example: 1994 })
   @IsNotEmpty()
   @IsInt()
   year: number;

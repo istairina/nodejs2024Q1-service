@@ -8,12 +8,12 @@ import {
 } from 'class-validator';
 
 export class CreateTrackDto {
-  @ApiProperty({ default: "Zombie" })
+  @ApiProperty({ example: "Zombie" })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ default: 307 })
+  @ApiProperty({ example: 307 })
   @IsNotEmpty()
   @IsInt()
   duration: number;
