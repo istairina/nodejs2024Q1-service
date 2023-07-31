@@ -16,7 +16,7 @@ import { idGEt } from 'src/common/dto/id.dto';
 @ApiTags('favourite')
 @Controller('favs')
 export class FavouriteController {
-  constructor(private readonly favouriteService: FavouriteService) {}
+  constructor(private readonly favouriteService: FavouriteService) { }
 
   @ApiOperation({ summary: 'Get list of all favourites' })
   @ApiOkResponse({
@@ -73,7 +73,7 @@ export class FavouriteController {
     return this.favouriteService.addArtist(id);
   }
 
-  @ApiOperation({ summary: 'Delete artist, album or track from favourites' })
+  @ApiOperation({ summary: 'Delete an artist from favourites' })
   @ApiParam({
     name: 'id',
     description: 'Put id',
@@ -84,7 +84,7 @@ export class FavouriteController {
   @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/artist/:id')
-  removeArtist(@Param('id') { id }: idGEt) {
+  removeArtist(@Param() { id }: idGEt) {
     return this.favouriteService.removeArtist(id);
   }
 
@@ -99,7 +99,7 @@ export class FavouriteController {
   @ApiBadRequestResponse({ description: 'Bad request: albumID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/album/:id')
-  removeAlbum(@Param('id') { id }: idGEt) {
+  removeAlbum(@Param() { id }: idGEt) {
     return this.favouriteService.removeArtist(id);
   }
 
@@ -114,7 +114,7 @@ export class FavouriteController {
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/track/:id')
-  removeTrack(@Param('id') { id }: idGEt) {
+  removeTrack(@Param() { id }: idGEt) {
     return this.favouriteService.removeArtist(id);
   }
 }
