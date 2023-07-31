@@ -13,12 +13,14 @@ import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { idGEt } from 'src/common/dto/id.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('album')
 @Controller('album')
 export class AlbumController {
   // private albumsService: AlbumsService;
 
-  constructor(private readonly albumService: AlbumService) {}
+  constructor(private readonly albumService: AlbumService) { }
 
   @Post()
   create(@Body() createAlbumDto: CreateAlbumDto) {
