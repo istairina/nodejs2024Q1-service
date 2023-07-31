@@ -2,6 +2,7 @@ import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { FavouriteService } from './favourite.service';
 import {
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -33,7 +34,7 @@ export class FavouriteController {
     name: 'id',
     description: 'Put a track id',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'The track has been added to favourites',
   })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
@@ -48,7 +49,7 @@ export class FavouriteController {
     name: 'id',
     description: 'Put an album id',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'The album has been added to favourites',
   })
   @ApiBadRequestResponse({ description: 'Bad request: album ID is invalid' })
@@ -63,7 +64,7 @@ export class FavouriteController {
     name: 'id',
     description: 'Put an artist id',
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'The artist has been added to favourites',
   })
   @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
