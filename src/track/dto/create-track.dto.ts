@@ -18,12 +18,12 @@ export class CreateTrackDto {
   @IsInt()
   duration: number;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: null })
   @IsOptional()
   @IsUUID(4)
   artistId?: string | null;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ example: null })
   @IsOptional()
   @IsUUID(4)
   albumId?: string | null;
