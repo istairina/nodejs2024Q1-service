@@ -49,6 +49,8 @@ export class TrackService {
     const track = this.getById(id);
     if (!track)
       throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
+    if (this.databaseService.favorites.tracks.has(id))
+      this.databaseService.favorites.tracks.delete(id);
     return this.databaseService.tracks.delete(id);
   }
 }

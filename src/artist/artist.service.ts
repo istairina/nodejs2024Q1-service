@@ -65,6 +65,9 @@ export class ArtistService {
       }
     });
 
+    if (this.databaseService.favorites.artists.has(id))
+      this.databaseService.favorites.artists.delete(id);
+
     return this.databaseService.artists.delete(id);
   }
 }

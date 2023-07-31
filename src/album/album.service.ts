@@ -59,6 +59,9 @@ export class AlbumService {
       }
     });
 
+    if (this.databaseService.favorites.albums.has(id))
+      this.databaseService.favorites.albums.delete(id);
+
     return this.databaseService.albums.delete(id);
   }
 }
