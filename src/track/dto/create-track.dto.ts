@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateTrackDto {
-  @ApiProperty({ example: "Zombie" })
+  @ApiProperty({ example: 'Zombie' })
   @IsNotEmpty()
   @IsString()
   name: string;

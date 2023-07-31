@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateAlbumDto {
-  @ApiProperty({ example: "No Need to Argue" })
+  @ApiProperty({ example: 'No Need to Argue' })
   @IsNotEmpty()
   @IsString()
   name: string;

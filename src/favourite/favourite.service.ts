@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFavouriteDto } from './dto/create-favourite.dto';
-import { UpdateFavouriteDto } from './dto/update-favourite.dto';
 
 @Injectable()
 export class FavouriteService {
-  create(createFavouriteDto: CreateFavouriteDto) {
+  create() {
     return 'This action adds a new favourite';
   }
 
@@ -16,7 +14,7 @@ export class FavouriteService {
     return `This action returns a #${id} favourite`;
   }
 
-  update(id: number, updateFavouriteDto: UpdateFavouriteDto) {
+  update(id: number) {
     return `This action updates a #${id} favourite`;
   }
 

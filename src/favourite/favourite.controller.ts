@@ -15,7 +15,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('favourite')
 @Controller('favs')
 export class FavouriteController {
-  constructor(private readonly favouriteService: FavouriteService) { }
+  constructor(private readonly favouriteService: FavouriteService) {}
 
   @Post('/track/:id')
   create(@Body() createFavouriteDto: CreateFavouriteDto) {
