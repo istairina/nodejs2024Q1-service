@@ -1,15 +1,47 @@
 version: '3.8'
 
 services:
-  db:
-    container_name: postgres-hsl
-    image: postgres:14.0-alpine
-    restart: always
-    environment:
-      - POSTGRES_USER=${TYPEORM_USERNAME}
-      - POSTGRES_PASSWORD=${TYPEORM_PASSWORD}
-      - POSTGRES_DB=${TYPEORM_DATABASE}
-    volumes:
-      - ./pgdata:/var/lib/postgesql/data
+  app-hsl:
+    container_name: app-hsl
+    image: node
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    # restart: always
+    restart: unless-stopped
+    env_file:
+      - .env
     ports:
-      - ${TYPEORM_PORT}:${TYPEORM_PORT}
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres-hsl
+    volumes:
+      - ./:/usr/app/
+      - ./db:/usr/app/db
+    # networks:
+    #   - hsl_net
+
+  postgres-hsl:
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    container_name: postgres-hsl
+    image: postgres:15.3-alpine3.18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /data/postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:5432
+    # networks:
+    #   - hsl_net
+    restart: unless-stopped
+
+volumes:
+  pgdata: {}
+# networks:
+#   hsl_net:
+#     driver: bridge
