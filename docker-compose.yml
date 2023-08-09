@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app-hsl:
     container_name: app-hsl
-    image: node
+    image: node:18.12-alpine3
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
@@ -18,8 +18,8 @@ services:
     volumes:
       - ./:/usr/app/
       - ./db:/usr/app/db
-    # networks:
-    #   - hsl_net
+    networks:
+      - hsl_net
 
   postgres-hsl:
     build:
@@ -31,17 +31,32 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /data/postgres
+      PGDATA: '/var/lib/postgresql/data/pgdata'
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - ${DB_PORT}:5432
-    # networks:
-    #   - hsl_net
+      - '5432:5432'
+    networks:
+      - hsl_net
     restart: unless-stopped
+
+  pgadmin:
+    links:
+      - postgres-hsl:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - '8080:80'
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - .env
+    networks:
+      - hsl_net
 
 volumes:
   pgdata: {}
-# networks:
-#   hsl_net:
-#     driver: bridge
+
+networks:
+  hsl_net:
+    driver: bridge

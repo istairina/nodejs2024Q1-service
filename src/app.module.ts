@@ -21,11 +21,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       type: 'postgres',
       host: 'localhost',
       database: 'pgdb',
-      username: 'root',
-      password: 'root',
+      username: 'admin',
+      password: 'admin',
       // entities: [],
       synchronize: true,
       autoLoadEntities: true,
+      // ssl: true,
+      // extra: {
+      //   ssl: {
+      //     rejectUnauthorized: false,
+      //   },
+      // },
       // useFactory: async (config: ConfigService) => ({
       //   type: config.get<'aurora-data-api'>('TYPEORM_CONNECTION'),
       // }),
