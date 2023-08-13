@@ -21,13 +21,13 @@ export class User {
 
   @ApiProperty({ example: 1 })
   @Column()
-  version: number; // integer number, increments on update
+  version: number;
 
   @ApiProperty({ example: Date.now() })
   @Column()
-  createdAt: number; // timestamp of creation
+  createdAt: number;
 
   @ApiProperty({ example: Date.now() })
   @Column()
-  updatedAt: number; // timestamp of last update
+  updatedAt: number;
 }

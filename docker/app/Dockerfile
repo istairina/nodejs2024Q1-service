@@ -1,6 +1,6 @@
-FROM node:18.12-alpine3.17
+FROM node:18.12-alpine3.17 as development
 
-WORKDIR /user/app/src
+WORKDIR /app
 
 COPY package*.json .
 

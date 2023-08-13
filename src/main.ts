@@ -13,7 +13,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  const config = await app.get(ConfigService);
+  const config = app.get(ConfigService);
   const PORT = config.get<number>('PORT') || 4000;
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('doc', app, document);
