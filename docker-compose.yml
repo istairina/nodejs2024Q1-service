@@ -11,7 +11,7 @@ services:
     environment:
       PORT: ${PORT}
       NODE_ENV: development
-    env-env_file:
+    env_file:
       - .env
     ports:
       - ${PORT}:${PORT}
