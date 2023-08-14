@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import {
   Entity,

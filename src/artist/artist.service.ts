@@ -3,8 +3,6 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 
 import { v4 as uuid } from 'uuid';
-import { TrackDto } from 'src/track/dto/track.dto';
-import { AlbumDto } from 'src/album/dto/album.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist } from './entities/artist.entity';
 import { Repository } from 'typeorm';
