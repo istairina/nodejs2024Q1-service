@@ -8,8 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: 'localhost',
+        type: 'postgres',
+        host: 'postgres-hsl',
         database: configService.get<string>('POSTGRES_DB'),
         username: configService.get<string>('POSTGRES_USER'),
         password: configService.get<string>('POSTGRES_PASSWORD'),
