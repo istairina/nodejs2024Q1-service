@@ -1,16 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Favourite } from './entities/favourite.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { Track } from 'src/track/entities/track.entity';
 
 @Injectable()
 export class FavouriteService {
   constructor(
-    @InjectRepository(Favourite)
-    private favouritesRepository: Repository<Favourite>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
   ) {}
 
-  findAll() {
+  async findAll() {
     // const artistsFavDb = this.favouritesRepository.find(artists);
     // const artists = Array.from(artistsFavDb.values());
     // const albumsFavDb = this.favouritesRepository.albums;
@@ -22,32 +23,59 @@ export class FavouriteService {
     //   albums: albums,
     //   tracks: tracks,
     // };
-    // return result;
+    // const allTracks = await this.trackRepository
+    //   .createQueryBuilder('track')
+    //   .select('track.isFavTrack', 'true')
+    //   .getMany();
+    // const res = await this.dataSource.getRepository("order") .createQueryBuilder("order") .where(order.status @> '[{"status": "Closed"}]') .getMany()
+    // console.log('allTracks', allTracks);
+    // return await this.favouritesRepository.find();
   }
 
-  addAlbum(id: string) {
-    // const album = this..albums.getById(id);
+  async addAlbum(id: string) {
+    // const album = this.albums.getById(id);
     // if (!album)
     //   throw new HttpException(
     //     'Album not found',
     //     HttpStatus.UNPROCESSABLE_ENTITY,
     //   );
     // this.favouritesRepository.albums.set(id, album);
+    // await this.favouritesRepository
+    //   .createQueryBuilder()
+    //   .update(Favourite)
+    //   .set({ albums: () => `array_append("albums", ${id})` })
+    //   .execute();
+
     return `This action adds a new favourite`;
   }
 
-  addTrack(id: string) {
+  async addTrack(id: string) {
     // const track = this.databaseService.tracks.getById(id);
-    // if (!track)
-    //   throw new HttpException(
-    //     'Album not found',
-    //     HttpStatus.UNPROCESSABLE_ENTITY,
-    //   );
-    // this.favouritesRepository.tracks.set(id, track);
+
+    const track = await this.trackRepository
+      .createQueryBuilder('track')
+      .select('track.id', id)
+      .getOne();
+
+    // console.log('trackGet', track);
+
+    if (!track)
+      throw new HttpException(
+        'Album not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+
+    await this.trackRepository
+      .createQueryBuilder()
+      .update(Track)
+      .set({ isFavTrack: true })
+      .where('id = :id', { id: id })
+      .execute();
+
     return `This action adds a new favourite ${id}`;
   }
 
-  addArtist(id: string) {
+  async addArtist(id: string) {
     // const artist = this.databaseService.artists.getById(id);
     // if (!artist)
     //   throw new HttpException(
@@ -55,9 +83,14 @@ export class FavouriteService {
     //     HttpStatus.UNPROCESSABLE_ENTITY,
     //   );
     // this.favouritesRepository.artists.set(id, artist);
+    // await this.favouritesRepository
+    //   .createQueryBuilder()
+    //   .update(Favourite)
+    //   .set({ artists: () => `array_append("artists", ${id})` })
+    //   .execute();
   }
 
-  removeArtist(id: string) {
+  async removeArtist(id: string) {
     // if (!this.favouritesRepository.artists.has(id))
     //   throw new HttpException(
     //     "There's no such id in favourite artists",
@@ -68,9 +101,14 @@ export class FavouriteService {
     //   'The atrist has been removed',
     //   HttpStatus.NO_CONTENT,
     // );
+    // await this.favouritesRepository
+    //   .createQueryBuilder()
+    //   .update(Favourite)
+    //   .set({ artists: () => `array_remove("artists", ${id})` })
+    //   .execute();
   }
 
-  removeTrack(id: string) {
+  async removeTrack(id: string) {
     // if (!this.favouritesRepository.tracks.has(id))
     //   throw new HttpException(
     //     "There's no such id in favourite tracks",
@@ -81,9 +119,14 @@ export class FavouriteService {
     //   'The track has been removed',
     //   HttpStatus.NO_CONTENT,
     // );
+    // await this.favouritesRepository
+    //   .createQueryBuilder()
+    //   .update(Favourite)
+    //   .set({ tracks: () => `array_remove("tracks", ${id})` })
+    //   .execute();
   }
 
-  removeAlbum(id: string) {
+  async removeAlbum(id: string) {
     // if (!this.favouritesRepository.albums.has(id))
     //   throw new HttpException(
     //     "There's no such id in favourite albums",
@@ -94,5 +137,10 @@ export class FavouriteService {
     //   'The album has been removed',
     //   HttpStatus.NO_CONTENT,
     // );
+    // await this.favouritesRepository
+    //   .createQueryBuilder()
+    //   .update(Favourite)
+    //   .set({ albums: () => `array_remove("albums", ${id})` })
+    //   .execute();
   }
 }

@@ -16,33 +16,35 @@ export class UserService {
   async create({ login, password }: CreateUserDto): Promise<User> {
     const newUser = {
       id: uuid(),
-      login,
-      password,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      login: login,
+      password: password,
     };
 
     const createdUser = this.usersRepository.create(newUser);
-    return this.usersRepository.save(createdUser);
+    const updatedUser = await this.usersRepository.save(createdUser);
+    return this.usersRepository.findOne({ where: { id: updatedUser.id } });
   }
 
   async getAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return await this.usersRepository.find();
   }
 
   async getById(id: string): Promise<User | null> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
-    return this.usersRepository.findOne({ where: { id } });
+    return await this.usersRepository.findOne({ where: { id } });
   }
 
   async update(
     id: string,
     { oldPassword, newPassword }: UpdateUserDto,
   ): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      select: ['password'],
+    });
+
     if (!user)
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     if (user.password !== oldPassword)
@@ -50,14 +52,15 @@ export class UserService {
         'Old password is incorrect',
         HttpStatus.FORBIDDEN,
       );
-    const newUser = {
-      ...user,
-      password: newPassword,
-      updatedAt: Date.now(),
-      version: user.version + 1,
-    };
-    await this.usersRepository.update(id, newUser);
-    return this.usersRepository.findOne({ where: { id } });
+
+    await this.usersRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({ password: newPassword })
+      .where('id = :id', { id: id })
+      .execute();
+
+    return await this.usersRepository.findOne({ where: { id } });
   }
 
   async remove(id: string): Promise<void> {

@@ -1,11 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  VersionColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
   @ApiProperty({ example: 'b2a0661b-20e9-4597-9c55-48105e4fa196' })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ example: 'user' })
@@ -16,18 +24,18 @@ export class User {
 
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @ApiProperty({ example: 1 })
-  @Column()
+  @VersionColumn()
   version: number;
 
   @ApiProperty({ example: Date.now() })
-  @Column()
-  createdAt: number;
+  @CreateDateColumn()
+  createdAt: Date;
 
   @ApiProperty({ example: Date.now() })
-  @Column()
-  updatedAt: number;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

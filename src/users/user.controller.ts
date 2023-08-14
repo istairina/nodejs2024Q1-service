@@ -104,6 +104,6 @@ export class UserController {
     if (!user) {
       throw new NotFoundException('User does not exist!');
     }
-    return this.userService.remove(id);
+    await this.userService.remove(id);
   }
 }

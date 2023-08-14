@@ -1,11 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Artist {
   @ApiProperty({ example: '5fba5a9f-4c8d-44e4-807f-afc89d2dab66' })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ example: 'The Cranberries' })
@@ -19,4 +19,9 @@ export class Artist {
   @IsBoolean()
   @Column()
   grammy: boolean;
+
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
+  @Column({ default: false })
+  isFavArtist?: boolean;
 }

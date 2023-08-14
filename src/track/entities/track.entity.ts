@@ -19,7 +19,7 @@ import {
 @Entity()
 export class Track {
   @ApiProperty({ example: 'd598c59f-2bfc-465e-8d57-58eccb649b14' })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ example: 'Zombie' })
@@ -37,14 +37,25 @@ export class Track {
   @ApiPropertyOptional({ example: null })
   @IsOptional()
   @IsUUID(4)
-  @OneToOne(() => Artist)
+  @OneToOne(() => Artist, (artistId) => artistId.id, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn()
   artistId?: string | null;
 
   @ApiPropertyOptional({ example: null })
   @IsOptional()
   @IsUUID(4)
-  @OneToOne(() => Album)
-  @JoinColumn()
+  @OneToOne(() => Album, (albumId) => albumId.id, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ referencedColumnName: 'id' })
   albumId?: string | null;
+
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
+  @Column({ default: false })
+  isFavTrack?: boolean;
 }

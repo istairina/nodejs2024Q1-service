@@ -9,8 +9,8 @@ export class UserDto extends CreateUserDto {
   version: number; // integer number, increments on update
 
   @ApiProperty({ example: Date.now() })
-  createdAt: number; // timestamp of creation
+  createdAt: Date; // timestamp of creation
 
   @ApiProperty({ example: Date.now() })
-  updatedAt: number; // timestamp of last update
+  updatedAt: Date; // timestamp of last update
 }

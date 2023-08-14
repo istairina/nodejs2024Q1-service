@@ -60,7 +60,7 @@ export class TrackService {
   }
 
   async remove(id: string): Promise<void> {
-    const track = this.tracksRepository.findOne({ where: { id } });
+    const track = await this.tracksRepository.findOne({ where: { id } });
     if (!track)
       throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
     // if (this.databaseService.favorites.tracks.has(id))

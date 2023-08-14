@@ -12,7 +12,7 @@ import {
 @Entity()
 export class Album {
   @ApiProperty({ example: 'd8e625a1-cd53-4a12-94c0-9b6b253877ab' })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ example: 'No Need to Argue' })
@@ -29,7 +29,15 @@ export class Album {
 
   @ApiPropertyOptional({ example: null })
   @IsOptional()
-  @OneToOne(() => Artist)
+  @OneToOne(() => Artist, (artistId) => artistId.id, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn()
   artistId?: string | null;
+
+  @ApiPropertyOptional({ example: null })
+  @IsOptional()
+  @Column({ default: false })
+  isFavAlbum?: boolean;
 }
