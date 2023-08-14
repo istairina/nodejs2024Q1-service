@@ -1,14 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { DatabaseService } from 'src/database/database.service';
 import { v4 as uuid } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Track } from './entities/track.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    @InjectRepository(Track)
+    private tracksRepository: Repository<Track>,
+  ) {}
 
-  create({ name, duration, artistId, albumId }: CreateTrackDto) {
+  async create({
+    name,
+    duration,
+    artistId,
+    albumId,
+  }: CreateTrackDto): Promise<Track> {
     const newTrack = {
       id: uuid(),
       name: name,
@@ -16,21 +26,24 @@ export class TrackService {
       artistId: artistId || null,
       albumId: albumId || null,
     };
-    return this.databaseService.tracks.create(newTrack);
+    return this.tracksRepository.create(newTrack);
   }
 
-  getAll() {
-    return this.databaseService.tracks.getAll();
+  async getAll(): Promise<Track[]> {
+    return this.tracksRepository.find();
   }
 
-  getById(id: string) {
-    if (!this.databaseService.tracks.getById(id))
+  async getById(id: string): Promise<Track> {
+    if (!this.tracksRepository.findOne({ where: { id } }))
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
-    return this.databaseService.tracks.getById(id);
+    return this.tracksRepository.findOne({ where: { id } });
   }
 
-  update(id: string, { name, duration, artistId, albumId }: UpdateTrackDto) {
-    const track = this.getById(id);
+  async update(
+    id: string,
+    { name, duration, artistId, albumId }: UpdateTrackDto,
+  ): Promise<Track> {
+    const track = await this.tracksRepository.findOne({ where: { id } });
     if (!track)
       throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
 
@@ -41,16 +54,16 @@ export class TrackService {
       artistId: artistId || null,
       albumId: albumId || null,
     };
-
-    return this.databaseService.tracks.update(id, updatedTrack);
+    await this.tracksRepository.update(id, updatedTrack);
+    return this.tracksRepository.findOne({ where: { id } });
   }
 
-  remove(id: string) {
-    const track = this.getById(id);
+  async remove(id: string): Promise<void> {
+    const track = this.tracksRepository.findOne({ where: { id } });
     if (!track)
       throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
-    if (this.databaseService.favorites.tracks.has(id))
-      this.databaseService.favorites.tracks.delete(id);
-    return this.databaseService.tracks.delete(id);
+    // if (this.databaseService.favorites.tracks.has(id))
+    //   this.databaseService.favorites.tracks.delete(id);
+    await this.tracksRepository.delete(id);
   }
 }
