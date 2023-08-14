@@ -26,7 +26,8 @@ export class TrackService {
       artistId: artistId || null,
       albumId: albumId || null,
     };
-    return this.tracksRepository.create(newTrack);
+    const createdTrack = this.tracksRepository.create(newTrack);
+    return this.tracksRepository.save(createdTrack);
   }
 
   async getAll(): Promise<Track[]> {

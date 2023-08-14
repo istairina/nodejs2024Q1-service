@@ -22,7 +22,8 @@ export class ArtistService {
       name: name,
       grammy: grammy,
     };
-    return this.artistsRepository.create(newData);
+    const createdArtist = this.artistsRepository.create(newData);
+    return this.artistsRepository.save(createdArtist);
   }
 
   async getAll() {

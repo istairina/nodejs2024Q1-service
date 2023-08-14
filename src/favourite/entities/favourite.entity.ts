@@ -1,15 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AlbumDto } from 'src/album/dto/album.dto';
-import { ArtistDto } from 'src/artist/dto/artist.dto';
-import { TrackDto } from 'src/track/dto/track.dto';
+import { Album } from 'src/album/entities/album.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
+import { Track } from 'src/track/entities/track.entity';
+import { ManyToOne } from 'typeorm';
 
 export class Favourite {
   @ApiProperty()
-  artists: ArtistDto[];
+  @ManyToOne(() => Artist, (artists) => artists.id)
+  artists: Artist[];
 
   @ApiProperty()
-  albums: AlbumDto[];
+  @ManyToOne(() => Album, (albums) => albums.id)
+  albums: Album[];
 
   @ApiProperty()
-  tracks: TrackDto[];
+  @ManyToOne(() => Track, (tracks) => tracks.id)
+  tracks: Track[];
 }

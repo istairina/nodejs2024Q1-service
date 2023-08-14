@@ -1,9 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-// import { DatabaseService } from 'src/database/database.service';
 import { v4 as uuid } from 'uuid';
-import { TrackDto } from 'src/track/dto/track.dto';
 import { Album } from './entities/album.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
