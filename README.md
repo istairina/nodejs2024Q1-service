@@ -10,13 +10,13 @@
 #### Downloading
 
 ```
-git clone https://github.com/istairina/nodejs2023Q2-service.git
+git clone https://github.com/istairina/nodejs2024Q1-service.git
 ```
 
 #### Changing folder
 
 ```
-cd nodejs2023Q2-service
+cd nodejs2024Q1-service
 ```
 
 #### Installing NPM modules
