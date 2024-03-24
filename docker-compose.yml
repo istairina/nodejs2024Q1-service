@@ -36,6 +36,7 @@ services:
       PGDATA: /var/lib/postgresql/data/hsl
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
     ports:
       - ${DB_PORT}:5432
     networks:
@@ -60,6 +61,7 @@ services:
 
 volumes:
   pgdata:
+  pglogs:
 
 networks:
   hsl_net:
