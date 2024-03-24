@@ -8,7 +8,7 @@ RUN npm ci && npm cache clean --force
 
 COPY . .
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE ${PORT}
 
