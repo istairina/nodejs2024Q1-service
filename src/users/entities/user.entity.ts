@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  VersionColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, VersionColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -30,11 +23,30 @@ export class User {
   @VersionColumn()
   version: number;
 
-  @ApiProperty({ example: Date.now() })
-  @CreateDateColumn()
-  createdAt: Date;
+  @ApiProperty({ required: true, example: Date.now() })
+  @IsNotEmpty()
+  @Column('bigint', {
+    transformer: {
+      from(value: string): number {
+        return parseInt(value, 10);
+      },
+      to(value: number): string {
+        return value.toString();
+      },
+    },
+  })
+  createdAt: number;
 
-  @ApiProperty({ example: Date.now() })
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @ApiProperty({ required: true, example: Date.now() })
+  @Column('bigint', {
+    transformer: {
+      from(value: string): number {
+        return parseInt(value, 10);
+      },
+      to(value: number): string {
+        return value.toString();
+      },
+    },
+  })
+  updatedAt: number;
 }

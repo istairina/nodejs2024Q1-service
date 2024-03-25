@@ -34,25 +34,25 @@ export class Track {
   @Column()
   duration: number;
 
-  @ApiPropertyOptional({ example: null })
-  @IsOptional()
+  @ApiProperty({ example: null })
   @IsUUID(4)
+  @Column({ nullable: true })
   @OneToOne(() => Artist, (artistId) => artistId.id, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn()
-  artistId?: string | null;
+  artistId: string | null;
 
-  @ApiPropertyOptional({ example: null })
-  @IsOptional()
+  @ApiProperty({ example: null })
   @IsUUID(4)
   @OneToOne(() => Album, (albumId) => albumId.id, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
+  @Column({ nullable: true })
   @JoinColumn({ referencedColumnName: 'id' })
-  albumId?: string | null;
+  albumId: string | null;
 
   @ApiPropertyOptional({ example: false })
   @IsOptional()

@@ -14,15 +14,31 @@ export class UserService {
   ) {}
 
   async create({ login, password }: CreateUserDto): Promise<User> {
-    const newUser = {
+    if (typeof password !== 'string' || typeof login !== 'string') {
+      throw new HttpException(
+        'Invalid login or password',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const newUser: User = {
       id: uuid(),
       login: login,
+      version: 1,
       password: password,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     };
 
-    const createdUser = this.usersRepository.create(newUser);
-    const updatedUser = await this.usersRepository.save(createdUser);
-    return this.usersRepository.findOne({ where: { id: updatedUser.id } });
+    // const createdUser = this.usersRepository.create(newUser);
+    // console.log('createdUser', createdUser);
+    await this.usersRepository.save(newUser);
+    // console.log('updatedUser', updatedUser);
+    // console.log(
+    //   'this.usersRepository.findOne({ where: { id: updatedUser.id } });',
+    //   await this.usersRepository.findOne({ where: { id: updatedUser.id } }),
+    // );
+    return this.usersRepository.findOne({ where: { id: newUser.id } });
   }
 
   async getAll(): Promise<User[]> {
@@ -46,27 +62,39 @@ export class UserService {
     id: string,
     { oldPassword, newPassword }: UpdateUserDto,
   ): Promise<User> {
+    if (typeof newPassword !== 'string') {
+      throw new HttpException('Invalid new password', HttpStatus.BAD_REQUEST);
+    }
+
     const user = await this.usersRepository.findOne({
       where: { id },
-      select: ['password'],
+      select: ['password', 'login', 'createdAt'],
     });
 
-    if (!user)
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    if (user.password !== oldPassword)
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (user.password === oldPassword) {
+      user.id = id;
+      user.password = newPassword;
+      user.updatedAt = Date.now();
+
+      // await this.usersRepository
+      //   .createQueryBuilder()
+      //   .update(User)
+      //   .set({ password: newPassword })
+      //   .set({ updatedAt: Date.now() })
+      //   .where('id = :id', { id: id })
+      //   .execute();
+      await this.usersRepository.save(user);
+
+      return await this.usersRepository.findOne({ where: { id } });
+    } else
       throw new HttpException(
         'Old password is incorrect',
         HttpStatus.FORBIDDEN,
       );
-
-    await this.usersRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({ password: newPassword })
-      .where('id = :id', { id: id })
-      .execute();
-
-    return await this.usersRepository.findOne({ where: { id } });
   }
 
   async remove(id: string): Promise<void> {
