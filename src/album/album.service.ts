@@ -6,6 +6,7 @@ import { Album } from './entities/album.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Track } from 'src/track/entities/track.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
 
 @Injectable()
 export class AlbumService {
@@ -14,6 +15,8 @@ export class AlbumService {
     private albumsRepository: Repository<Album>,
     @InjectRepository(Track)
     private trackRepository: Repository<Track>,
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
   ) {}
 
   async create({ name, year, artistId }: CreateAlbumDto) {
@@ -42,14 +45,28 @@ export class AlbumService {
     const album = await this.albumsRepository.findOne({ where: { id } });
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    const updatedAlbum = {
-      id: id,
-      name: name,
-      year: year,
-      artistId: artistId || null,
-    };
-    await this.albumsRepository.update(id, updatedAlbum);
-    return this.albumsRepository.findOne({ where: { id } });
+    if (artistId) {
+      const artist = await this.artistRepository.findOne({
+        where: { id: artistId },
+      });
+      if (!artist) {
+        throw new HttpException(
+          'There is no artist with such ID',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    if (name) {
+      album.name = name;
+    }
+    if (year) {
+      album.year = year;
+    }
+    if (artistId) {
+      album.artistId = artistId;
+    }
+    return this.albumsRepository.save(album);
   }
 
   async remove(id: string) {
@@ -58,17 +75,7 @@ export class AlbumService {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
 
     await this.trackRepository.update({ albumId: id }, { albumId: null });
-    // const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
-    // allTracks.forEach((track) => {
-    //   if (track.albumId === id) {
-    //     this.databaseService.tracks.update(track.id, {
-    //       ...track,
-    //       albumId: null,
-    //     });
-    //   }
-    // });
-    // if (this.databaseService.favorites.albums.has(id))
-    // this.databaseService.favorites.albums.delete(id);
+
     await this.albumsRepository.delete(id);
   }
 }
