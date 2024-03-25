@@ -33,7 +33,13 @@ export class UserService {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
-    return await this.usersRepository.findOne({ where: { id } });
+    return user;
+  }
+
+  async getByName(login: string): Promise<User | null> {
+    const user = await this.usersRepository.findOne({ where: { login } });
+    if (!user) return null;
+    return user;
   }
 
   async update(
