@@ -6,7 +6,6 @@ import {
   Put,
   Param,
   Delete,
-  HttpException,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
@@ -66,8 +65,6 @@ export class ArtistController {
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Get(':id')
   findOne(@Param() { id }: idGEt) {
-    if (!this.artistService.getById(id))
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     return this.artistService.getById(id);
   }
 

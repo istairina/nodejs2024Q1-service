@@ -38,7 +38,7 @@ export class AlbumService {
     const album = await this.albumsRepository.findOne({ where: { id } });
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    return this.albumsRepository.findOne({ where: { id } });
+    return album;
   }
 
   async update(id: string, { name, year, artistId }: UpdateAlbumDto) {
