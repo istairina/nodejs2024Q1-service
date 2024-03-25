@@ -1,15 +1,32 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AlbumDto } from 'src/album/dto/album.dto';
-import { ArtistDto } from 'src/artist/dto/artist.dto';
-import { TrackDto } from 'src/track/dto/track.dto';
+import { Album } from 'src/album/entities/album.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
+import { Track } from 'src/track/entities/track.entity';
+import { Entity, JoinTable, ManyToOne, PrimaryColumn } from 'typeorm';
 
+@Entity()
 export class Favourite {
-  @ApiProperty()
-  artists: ArtistDto[];
+  @PrimaryColumn({ default: 0 })
+  id: string;
 
   @ApiProperty()
-  albums: AlbumDto[];
+  @ManyToOne(() => Artist)
+  @JoinTable()
+  artist: Artist;
 
   @ApiProperty()
-  tracks: TrackDto[];
+  @ManyToOne(() => Album)
+  @JoinTable()
+  album: Album;
+
+  @ApiProperty()
+  @ManyToOne(() => Track)
+  @JoinTable()
+  track: Track;
+}
+
+export interface FavoriteResponse {
+  artists: Artist[];
+  albums: Album[];
+  tracks: Track[];
 }

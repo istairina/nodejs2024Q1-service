@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  app-hsl:
+    container_name: app-hsl
+    image: node:20.11-alpine3
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+      args:
+        - DATABASE_URL=${DATABASE_URL}
+      target: development
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: ${PORT}
+      NODE_ENV: development
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres-hsl
+    volumes:
+      - ./src:/app/src
+    networks:
+      - hsl_net
+
+  postgres-hsl:
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    container_name: postgres-hsl
+    image: postgres:15.3-alpine3.18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/hsl
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    networks:
+      - hsl_net
+    expose:
+      - ${DB_PORT}
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  pglogs:
+
+networks:
+  hsl_net:
+    driver: bridge

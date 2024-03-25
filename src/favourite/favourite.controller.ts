@@ -1,5 +1,12 @@
-import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
-import { FavouriteService } from './favourite.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -13,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { Favourite } from './entities/favourite.entity';
 import { idGEt } from 'src/common/dto/id.dto';
+import { FavouriteService } from './favourite.service';
 
 @ApiTags('favourite')
 @Controller('favs')
@@ -85,6 +93,7 @@ export class FavouriteController {
   @ApiBadRequestResponse({ description: 'Bad request: artistID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/artist/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   removeArtist(@Param() { id }: idGEt) {
     return this.favouriteService.removeArtist(id);
   }
@@ -100,6 +109,7 @@ export class FavouriteController {
   @ApiBadRequestResponse({ description: 'Bad request: albumID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/album/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   removeAlbum(@Param() { id }: idGEt) {
     return this.favouriteService.removeAlbum(id);
   }
@@ -115,6 +125,7 @@ export class FavouriteController {
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete('/track/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   removeTrack(@Param() { id }: idGEt) {
     return this.favouriteService.removeTrack(id);
   }

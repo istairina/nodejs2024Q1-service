@@ -91,7 +91,7 @@ export class TrackController {
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() { id }: idGEt) {
-    return this.trackService.remove(id);
+  async remove(@Param() { id }: idGEt) {
+    return await this.trackService.remove(id);
   }
 }

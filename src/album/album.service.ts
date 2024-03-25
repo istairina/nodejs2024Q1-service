@@ -1,67 +1,81 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { DatabaseService } from 'src/database/database.service';
 import { v4 as uuid } from 'uuid';
-import { TrackDto } from 'src/track/dto/track.dto';
+import { Album } from './entities/album.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Track } from 'src/track/entities/track.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
 
 @Injectable()
 export class AlbumService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    @InjectRepository(Album)
+    private albumsRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
+  ) {}
 
-  create({ name, year, artistId }: CreateAlbumDto) {
+  async create({ name, year, artistId }: CreateAlbumDto) {
     const newAlbum = {
       id: uuid(),
       name: name,
       year: year,
       artistId: artistId || null,
     };
-    return this.databaseService.albums.create(newAlbum);
+    const createdUser = this.albumsRepository.create(newAlbum);
+    return this.albumsRepository.save(createdUser);
   }
 
-  getAll() {
-    return this.databaseService.albums.getAll();
+  async getAll() {
+    return this.albumsRepository.find();
   }
 
-  getById(id: string) {
-    if (!this.databaseService.albums.getById(id))
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    return this.databaseService.albums.getById(id);
-  }
-
-  update(id: string, { name, year, artistId }: UpdateAlbumDto) {
-    const album = this.getById(id);
+  async getById(id: string) {
+    const album = await this.albumsRepository.findOne({ where: { id } });
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-
-    const updatedAlbum = {
-      id: id,
-      name: name,
-      year: year,
-      artistId: artistId || null,
-    };
-
-    return this.databaseService.albums.update(id, updatedAlbum);
+    return album;
   }
 
-  remove(id: string) {
-    const album = this.getById(id);
+  async update(id: string, { name, year, artistId }: UpdateAlbumDto) {
+    const album = await this.albumsRepository.findOne({ where: { id } });
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-
-    const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
-    allTracks.forEach((track) => {
-      if (track.albumId === id) {
-        this.databaseService.tracks.update(track.id, {
-          ...track,
-          albumId: null,
-        });
+    if (artistId) {
+      const artist = await this.artistRepository.findOne({
+        where: { id: artistId },
+      });
+      if (!artist) {
+        throw new HttpException(
+          'There is no artist with such ID',
+          HttpStatus.BAD_REQUEST,
+        );
       }
-    });
+    }
 
-    if (this.databaseService.favorites.albums.has(id))
-      this.databaseService.favorites.albums.delete(id);
+    if (name) {
+      album.name = name;
+    }
+    if (year) {
+      album.year = year;
+    }
+    if (artistId) {
+      album.artistId = artistId;
+    }
+    return this.albumsRepository.save(album);
+  }
 
-    return this.databaseService.albums.delete(id);
+  async remove(id: string) {
+    const album = await this.albumsRepository.findOne({ where: { id } });
+    if (!album)
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+
+    await this.trackRepository.update({ albumId: id }, { albumId: null });
+
+    await this.albumsRepository.delete(id);
   }
 }

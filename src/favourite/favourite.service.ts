@@ -1,97 +1,120 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Track } from 'src/track/entities/track.entity';
+import { Album } from 'src/album/entities/album.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
+import { AlbumFavourite } from './entities/favouriteAlbum.entity';
+import { ArtistFavourite } from './entities/favouriteArtist.entity';
+import { TrackFavourite } from './entities/favouriteTrack.entity';
 
 @Injectable()
 export class FavouriteService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+    @InjectRepository(TrackFavourite)
+    private trackFavourite: Repository<TrackFavourite>,
 
-  findAll() {
-    const artistsFavDb = this.databaseService.favorites.artists;
-    const artists = Array.from(artistsFavDb.values());
+    @InjectRepository(Album)
+    private albumRepository: Repository<Album>,
+    @InjectRepository(AlbumFavourite)
+    private albumFavourite: Repository<AlbumFavourite>,
 
-    const albumsFavDb = this.databaseService.favorites.albums;
-    const albums = Array.from(albumsFavDb.values());
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
+    @InjectRepository(ArtistFavourite)
+    private artistFavourite: Repository<ArtistFavourite>,
+  ) {}
 
-    const tracksFavDb = this.databaseService.favorites.tracks;
-    const tracks = Array.from(tracksFavDb.values());
+  async findAll() {
+    const artistFavs = await this.artistFavourite.find({
+      relations: { artist: true },
+    });
+    const artists = artistFavs.map((artistFav) => artistFav.artist);
 
-    const result = {
-      artists: artists,
-      albums: albums,
-      tracks: tracks,
-    };
+    const albumsFavs = await this.albumFavourite.find({
+      relations: { album: true },
+    });
+    const albums = albumsFavs.map((albumFav) => albumFav.album);
 
-    return result;
+    const tracksFavs = await this.trackFavourite.find({
+      relations: { track: true },
+    });
+    const tracks = tracksFavs.map((track) => track.track);
+
+    return { artists, albums, tracks };
   }
 
-  addAlbum(id: string) {
-    const album = this.databaseService.albums.getById(id);
-    if (!album)
+  async addAlbum(id: string) {
+    const album = await this.albumRepository.findOneBy({ id });
+    if (!album) {
       throw new HttpException(
         'Album not found',
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    this.databaseService.favorites.albums.set(id, album);
-    return `This action adds a new favourite`;
+    }
+
+    const albumFav = new AlbumFavourite();
+    albumFav.album = album;
+
+    await this.albumFavourite.save(albumFav);
   }
 
-  addTrack(id: string) {
-    const track = this.databaseService.tracks.getById(id);
-    if (!track)
+  async addTrack(id: string) {
+    const track = await this.trackRepository.findOneBy({ id });
+    if (!track) {
       throw new HttpException(
-        'Album not found',
+        'Track not found',
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    this.databaseService.favorites.tracks.set(id, track);
-    return `This action adds a new favourite ${id}`;
+    }
+
+    const trackFav = new TrackFavourite();
+    trackFav.track = track;
+
+    await this.trackFavourite.save(trackFav);
   }
 
-  addArtist(id: string) {
-    const artist = this.databaseService.artists.getById(id);
+  async addArtist(id: string) {
+    const artist = await this.artistRepository.findOneBy({ id });
+    if (!artist) {
+      throw new HttpException(
+        'Artist not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const artistFav = new ArtistFavourite();
+    artistFav.artist = artist;
+
+    await this.artistFavourite.save(artistFav);
+  }
+
+  async removeArtist(artistId: string) {
+    const artist = await this.artistFavourite.findOne({ where: { artistId } });
+
     if (!artist)
-      throw new HttpException(
-        'Album not found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    this.databaseService.favorites.artists.set(id, artist);
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+
+    await this.artistFavourite.delete(artist.id);
   }
 
-  removeArtist(id: string) {
-    if (!this.databaseService.favorites.artists.has(id))
-      throw new HttpException(
-        "There's no such id in favourite artists",
-        HttpStatus.NOT_FOUND,
-      );
-    this.databaseService.favorites.artists.delete(id);
-    throw new HttpException(
-      'The atrist has been removed',
-      HttpStatus.NO_CONTENT,
-    );
+  async removeTrack(trackId: string) {
+    const track = await this.trackFavourite.findOne({ where: { trackId } });
+
+    if (!track)
+      throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
+
+    await this.trackFavourite.delete(track.id);
   }
 
-  removeTrack(id: string) {
-    if (!this.databaseService.favorites.tracks.has(id))
-      throw new HttpException(
-        "There's no such id in favourite tracks",
-        HttpStatus.NOT_FOUND,
-      );
-    this.databaseService.favorites.tracks.delete(id);
-    throw new HttpException(
-      'The track has been removed',
-      HttpStatus.NO_CONTENT,
-    );
-  }
+  async removeAlbum(albumId: string) {
+    const album = await this.albumFavourite.findOne({ where: { albumId } });
 
-  removeAlbum(id: string) {
-    if (!this.databaseService.favorites.albums.has(id))
-      throw new HttpException(
-        "There's no such id in favourite albums",
-        HttpStatus.NOT_FOUND,
-      );
-    this.databaseService.favorites.albums.delete(id);
-    throw new HttpException(
-      'The album has been removed',
-      HttpStatus.NO_CONTENT,
-    );
+    if (!album)
+      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+
+    await this.albumFavourite.delete(album.id);
   }
 }

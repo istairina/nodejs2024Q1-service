@@ -6,9 +6,9 @@ import {
   Put,
   Param,
   Delete,
-  HttpException,
   HttpStatus,
   HttpCode,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -39,8 +39,8 @@ export class UserController {
       'Bad request: some required fields are empty or it has wrong data',
   })
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Body() user: CreateUserDto): Promise<User> {
+    return this.userService.create(user);
   }
 
   @ApiOperation({ summary: 'Get list of all users' })
@@ -50,7 +50,7 @@ export class UserController {
     isArray: true,
   })
   @Get()
-  findAll() {
+  async findAll(): Promise<User[]> {
     return this.userService.getAll();
   }
 
@@ -63,12 +63,13 @@ export class UserController {
   @ApiBadRequestResponse({ description: 'Bad request: userID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Get(':id')
-  findOne(@Param() { id }: idGEt) {
-    if (!this.userService.getById(id))
-      throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
-    const response = this.userService.getById(id);
-    delete response['password'];
-    return response;
+  async findOne(@Param() { id }: idGEt): Promise<User> {
+    const user = await this.userService.getById(id);
+    if (!user) {
+      throw new NotFoundException('User does not exist!');
+    } else {
+      return user;
+    }
   }
 
   @ApiOperation({ summary: 'Change password of the user' })
@@ -81,8 +82,11 @@ export class UserController {
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @ApiForbiddenResponse({ description: 'Forbidden: old password is wrong' })
   @Put(':id')
-  update(@Param() { id }: idGEt, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  async update(
+    @Param() { id }: idGEt,
+    @Body() user: UpdateUserDto,
+  ): Promise<User> {
+    return this.userService.update(id, user);
   }
 
   @ApiOperation({ summary: 'Delete the user' })
@@ -95,7 +99,11 @@ export class UserController {
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param() { id }: idGEt) {
-    return this.userService.remove(id);
+  async remove(@Param() { id }: idGEt): Promise<any> {
+    const user = await this.userService.getById(id);
+    if (!user) {
+      throw new NotFoundException('User does not exist!');
+    }
+    await this.userService.remove(id);
   }
 }
