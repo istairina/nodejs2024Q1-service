@@ -5,12 +5,15 @@ import { v4 as uuid } from 'uuid';
 import { Album } from './entities/album.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Track } from 'src/track/entities/track.entity';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectRepository(Album)
     private albumsRepository: Repository<Album>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
   ) {}
 
   async create({ name, year, artistId }: CreateAlbumDto) {
@@ -53,6 +56,8 @@ export class AlbumService {
     const album = await this.albumsRepository.findOne({ where: { id } });
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
+
+    await this.trackRepository.update({ albumId: id }, { albumId: null });
     // const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
     // allTracks.forEach((track) => {
     //   if (track.albumId === id) {

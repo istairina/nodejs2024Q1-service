@@ -57,6 +57,7 @@ export class TrackService {
       albumId: albumId || null,
     };
     await this.tracksRepository.update(id, updatedTrack);
+
     return this.tracksRepository.findOne({ where: { id } });
   }
 
