@@ -97,7 +97,7 @@ export class FavouriteService {
     if (!artist)
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
 
-    await this.artistRepository.delete(artist.id);
+    await this.artistFavourite.delete(artist.id);
   }
 
   async removeTrack(trackId: string) {
@@ -106,7 +106,7 @@ export class FavouriteService {
     if (!track)
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
 
-    await this.trackRepository.delete(track.id);
+    await this.trackFavourite.delete(track.id);
   }
 
   async removeAlbum(albumId: string) {
@@ -115,6 +115,6 @@ export class FavouriteService {
     if (!album)
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
 
-    await this.albumRepository.delete(album.id);
+    await this.albumFavourite.delete(album.id);
   }
 }
