@@ -5,6 +5,7 @@ import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
 import { FavouriteModule } from './favourite/favourite.module';
 import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     AlbumModule,
     FavouriteModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
   ],
 })
 export class AppModule {}
