@@ -83,7 +83,6 @@
       "ts"
     ],
     "rootDir": "test",
-
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },

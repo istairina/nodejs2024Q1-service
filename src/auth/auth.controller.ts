@@ -9,7 +9,14 @@ import {
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { Auth } from './entities/auth.entity';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiForbiddenResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Public } from './public.decorator';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -17,26 +24,28 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.CREATED)
-  @Post('/sighup')
-  signUp(@Body() signInDto: Auth) {
-    return this.authService.signUp(signInDto.login, signInDto.password);
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successful signup',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad reuqest',
+  })
+  @ApiForbiddenResponse({ description: 'It is forbidden' })
+  @Post('signup')
+  @Public()
+  signup(@Body() signUpDto: CreateAuthDto) {
+    return this.authService.signUp(signUpDto);
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('/login')
-  login(@Body() signInDto: Auth) {
-    return this.authService.login(signInDto.login, signInDto.password);
+  @Post('login')
+  @Public()
+  login(@Body() loginDto: CreateAuthDto) {
+    return this.authService.login(loginDto);
   }
-
-  // @HttpCode(HttpStatus.OK)
-  // @Post('/refresh')
-  // refresh(@Body() signInDto: Record<string, any>) {
-  //   return this.authService.refresh(signInDto.username, signInDto.password);
-  // }
-
-  // @UseGuards(AuthGuard)
-  // @Get('profile')
-  // getProfile(@Request() req) {
-  //   return req.user;
-  // }
 }
