@@ -30,14 +30,8 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    // const createdUser = this.usersRepository.create(newUser);
-    // console.log('createdUser', createdUser);
     await this.usersRepository.save(newUser);
-    // console.log('updatedUser', updatedUser);
-    // console.log(
-    //   'this.usersRepository.findOne({ where: { id: updatedUser.id } });',
-    //   await this.usersRepository.findOne({ where: { id: updatedUser.id } }),
-    // );
+
     return this.usersRepository.findOne({ where: { id: newUser.id } });
   }
 

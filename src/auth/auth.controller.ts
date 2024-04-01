@@ -34,6 +34,14 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad reuqest',
+  })
+  @ApiForbiddenResponse({ description: 'It is forbidden' })
   @Post('login')
   @Public()
   login(@Body() loginDto: CreateAuthDto) {

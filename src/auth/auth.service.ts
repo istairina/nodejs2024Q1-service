@@ -21,9 +21,7 @@ export class AuthService {
 
   async login(createAuthDto: CreateAuthDto): Promise<Auth> {
     const user = await this.userService.findByLogin(createAuthDto.login);
-    // if (user?.password !== createAuthDto.password) {
-    //   throw new UnauthorizedException();
-    // }
+
     const payload = { userId: user.id, login: user.login };
 
     const accessToken = await this.jwtService.signAsync(payload, {
