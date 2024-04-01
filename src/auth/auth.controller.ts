@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiBadRequestResponse,
@@ -8,6 +15,9 @@ import {
 } from '@nestjs/swagger';
 import { Public } from './public.decorator';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { RefreshDto } from './dto/refresh.dto';
+import { Auth } from './entities/auth.entity';
+import { AuthGuard } from './auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -46,5 +56,13 @@ export class AuthController {
   @Public()
   login(@Body() loginDto: CreateAuthDto) {
     return this.authService.login(loginDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  @UseGuards(AuthGuard)
+  @Public()
+  async refresh(@Body() refreshDto: RefreshDto): Promise<Auth> {
+    return await this.authService.refresh(refreshDto);
   }
 }
