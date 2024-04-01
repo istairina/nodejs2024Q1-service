@@ -6,6 +6,7 @@ import { AlbumModule } from './album/album.module';
 import { FavouriteModule } from './favourite/favourite.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
