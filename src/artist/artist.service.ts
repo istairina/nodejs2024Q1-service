@@ -6,12 +6,18 @@ import { v4 as uuid } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist } from './entities/artist.entity';
 import { Repository } from 'typeorm';
+import { Track } from 'src/track/entities/track.entity';
+import { Album } from 'src/album/entities/album.entity';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @InjectRepository(Artist)
     private artistsRepository: Repository<Artist>,
+    @InjectRepository(Track)
+    private tracksRepository: Repository<Track>,
+    @InjectRepository(Album)
+    private albumsRepository: Repository<Album>,
   ) {}
 
   async create({ name, grammy }: CreateArtistDto) {
@@ -29,7 +35,10 @@ export class ArtistService {
   }
 
   async getById(id: string) {
-    return this.artistsRepository.findOne({ where: { id } });
+    const artist = await this.artistsRepository.findOne({ where: { id } });
+    if (!artist)
+      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
+    return artist;
   }
 
   async update(id: string, { name, grammy }: UpdateArtistDto) {
@@ -72,6 +81,9 @@ export class ArtistService {
 
     // if (this.databaseService.favorites.artists.has(id))
     //   this.databaseService.favorites.artists.delete(id);
+
+    await this.albumsRepository.update({ artistId: id }, { artistId: null });
+    await this.tracksRepository.update({ artistId: id }, { artistId: null });
 
     await this.artistsRepository.delete(id);
   }

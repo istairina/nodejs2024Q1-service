@@ -28,13 +28,13 @@ export class Album {
   year: number;
 
   @ApiPropertyOptional({ example: null })
-  @IsOptional()
+  @Column({ nullable: true })
   @OneToOne(() => Artist, (artistId) => artistId.id, {
     onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn()
-  artistId?: string | null;
+  artistId: string | null;
 
   @ApiPropertyOptional({ example: null })
   @IsOptional()

@@ -35,9 +35,10 @@ export class TrackService {
   }
 
   async getById(id: string): Promise<Track> {
-    if (!this.tracksRepository.findOne({ where: { id } }))
+    const track = await this.tracksRepository.findOne({ where: { id } });
+    if (!track)
       throw new HttpException('Track not found', HttpStatus.NOT_FOUND);
-    return this.tracksRepository.findOne({ where: { id } });
+    return track;
   }
 
   async update(
@@ -56,6 +57,7 @@ export class TrackService {
       albumId: albumId || null,
     };
     await this.tracksRepository.update(id, updatedTrack);
+
     return this.tracksRepository.findOne({ where: { id } });
   }
 

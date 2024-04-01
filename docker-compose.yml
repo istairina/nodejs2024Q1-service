@@ -3,16 +3,18 @@ version: '3.8'
 services:
   app-hsl:
     container_name: app-hsl
-    image: node:18.12-alpine3
+    image: node:20.11-alpine3
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
+      args:
+        - DATABASE_URL=${DATABASE_URL}
+      target: development
     restart: unless-stopped
     environment:
+      DATABASE_URL: ${DATABASE_URL}
       PORT: ${PORT}
       NODE_ENV: development
-    env_file:
-      - .env
     ports:
       - ${PORT}:${PORT}
     depends_on:
@@ -32,34 +34,21 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      # DATABASE_URL: ${DATABASE_URL}
       PGDATA: /var/lib/postgresql/data/hsl
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql
     ports:
-      - ${DB_PORT}:5432
+      - ${DB_PORT}:${DB_PORT}
     networks:
       - hsl_net
     expose:
-      - 5432
+      - ${DB_PORT}
     restart: unless-stopped
-
-  # pgadmin:
-  #   links:
-  #     - postgres-hsl:postgres
-  #   container_name: pgadmin
-  #   image: dpage/pgadmin4
-  #   ports:
-  #     - '8080:80'
-  #   volumes:
-  #     - /data/pgadmin:/root/.pgadmin
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - hsl_net
 
 volumes:
   pgdata:
+  pglogs:
 
 networks:
   hsl_net:

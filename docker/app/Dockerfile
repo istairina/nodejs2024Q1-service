@@ -1,4 +1,4 @@
-FROM node:18.12-alpine3.17 as development
+FROM node:20.11.1-alpine3.18 as development
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN npm ci && npm cache clean --force
 
 COPY . .
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE ${PORT}
 
