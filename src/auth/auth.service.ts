@@ -50,19 +50,25 @@ export class AuthService {
     if (!token) throw new UnauthorizedException();
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const { userId, login } = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET_REFRESH_KEY || 'secret123123',
       });
 
-      const accessToken = await this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET_KEY || 'secret123123',
-        expiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
-      });
+      const accessToken = await this.jwtService.signAsync(
+        { userId, login },
+        {
+          secret: process.env.JWT_SECRET_KEY || 'secret123123',
+          expiresIn: process.env.TOKEN_EXPIRE_TIME || '1h',
+        },
+      );
 
-      const refreshToken = await this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET_REFRESH_KEY || 'secret123123',
-        expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h',
-      });
+      const refreshToken = await this.jwtService.signAsync(
+        { userId, login },
+        {
+          secret: process.env.JWT_SECRET_REFRESH_KEY || 'secret123123',
+          expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h',
+        },
+      );
 
       if (!accessToken || !refreshToken) throw new ForbiddenException();
 
