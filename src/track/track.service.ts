@@ -65,8 +65,7 @@ export class TrackService {
     const track = await this.tracksRepository.findOne({ where: { id } });
     if (!track)
       throw new HttpException("Track don't found", HttpStatus.NOT_FOUND);
-    // if (this.databaseService.favorites.tracks.has(id))
-    //   this.databaseService.favorites.tracks.delete(id);
+
     await this.tracksRepository.delete(id);
   }
 }

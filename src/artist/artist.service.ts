@@ -59,29 +59,6 @@ export class ArtistService {
     if (!artist)
       throw new HttpException("Artist don't found", HttpStatus.NOT_FOUND);
 
-    // const allTracks: TrackDto[] = this.databaseService.tracks.getAll();
-    // allTracks.forEach((track) => {
-    //   if (track.artistId === id) {
-    //     this.databaseService.tracks.update(track.id, {
-    //       ...track,
-    //       artistId: null,
-    //     });
-    //   }
-    // });
-
-    // const allAlbums: AlbumDto[] = this.databaseService.albums.getAll();
-    // allAlbums.forEach((album) => {
-    //   if (album.artistId === id) {
-    //     this.databaseService.albums.update(album.id, {
-    //       ...album,
-    //       artistId: null,
-    //     });
-    //   }
-    // });
-
-    // if (this.databaseService.favorites.artists.has(id))
-    //   this.databaseService.favorites.artists.delete(id);
-
     await this.albumsRepository.update({ artistId: id }, { artistId: null });
     await this.tracksRepository.update({ artistId: id }, { artistId: null });
 

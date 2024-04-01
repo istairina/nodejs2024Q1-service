@@ -30,14 +30,8 @@ export class UserService {
       updatedAt: Date.now(),
     };
 
-    // const createdUser = this.usersRepository.create(newUser);
-    // console.log('createdUser', createdUser);
     await this.usersRepository.save(newUser);
-    // console.log('updatedUser', updatedUser);
-    // console.log(
-    //   'this.usersRepository.findOne({ where: { id: updatedUser.id } });',
-    //   await this.usersRepository.findOne({ where: { id: updatedUser.id } }),
-    // );
+
     return this.usersRepository.findOne({ where: { id: newUser.id } });
   }
 
@@ -79,14 +73,6 @@ export class UserService {
       user.id = id;
       user.password = newPassword;
       user.updatedAt = Date.now();
-
-      // await this.usersRepository
-      //   .createQueryBuilder()
-      //   .update(User)
-      //   .set({ password: newPassword })
-      //   .set({ updatedAt: Date.now() })
-      //   .where('id = :id', { id: id })
-      //   .execute();
       await this.usersRepository.save(user);
 
       return await this.usersRepository.findOne({ where: { id } });
@@ -102,5 +88,12 @@ export class UserService {
     if (!user)
       throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
     await this.usersRepository.delete(id);
+  }
+
+  async findByLogin(login: string) {
+    const user = await this.usersRepository.findOne({ where: { login } });
+    if (!user)
+      throw new HttpException("User don't found", HttpStatus.NOT_FOUND);
+    return user;
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Artist } from 'src/artist/entities/artist.entity';
 import {
   Entity,
@@ -35,9 +35,4 @@ export class Album {
   })
   @JoinColumn()
   artistId: string | null;
-
-  @ApiPropertyOptional({ example: null })
-  @IsOptional()
-  @Column({ default: false })
-  isFavAlbum?: boolean;
 }
