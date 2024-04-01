@@ -9,21 +9,23 @@ import {
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { Auth } from './entities/auth.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @HttpCode(HttpStatus.OK)
-  @Post('/login')
-  login(@Body() signInDto: Auth) {
-    return this.authService.login(signInDto.login, signInDto.password);
-  }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('/sighup')
   signUp(@Body() signInDto: Auth) {
     return this.authService.signUp(signInDto.login, signInDto.password);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/login')
+  login(@Body() signInDto: Auth) {
+    return this.authService.login(signInDto.login, signInDto.password);
   }
 
   // @HttpCode(HttpStatus.OK)

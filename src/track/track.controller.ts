@@ -22,6 +22,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { TrackDto } from './dto/track.dto';
 
@@ -39,6 +40,7 @@ export class TrackController {
     description:
       'Bad request: some required fields are empty or it has wrong data',
   })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
     return this.trackService.create(createTrackDto);
@@ -50,6 +52,7 @@ export class TrackController {
     type: TrackDto,
     isArray: true,
   })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @Get()
   findAll() {
     return this.trackService.getAll();
@@ -63,6 +66,7 @@ export class TrackController {
   @ApiOkResponse({ description: 'Track has been got', type: TrackDto })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @Get(':id')
   findOne(@Param() { id }: idGEt) {
     return this.trackService.getById(id);
@@ -76,6 +80,7 @@ export class TrackController {
   @ApiOkResponse({ description: 'User has been updated', type: TrackDto })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @Put(':id')
   update(@Param() { id }: idGEt, @Body() updateTrackDto: UpdateTrackDto) {
     return this.trackService.update(id, updateTrackDto);
@@ -89,6 +94,7 @@ export class TrackController {
   @ApiNoContentResponse({ description: 'No content: track has been deleted' })
   @ApiBadRequestResponse({ description: 'Bad request: trackID is invalid' })
   @ApiNotFoundResponse({ description: "ID doesn't exist in the database" })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param() { id }: idGEt) {
